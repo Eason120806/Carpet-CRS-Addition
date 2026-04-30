@@ -1,0 +1,25 @@
+{
+	"required": true,
+	"package": "com.github.eason120806.carpetcrsaddition.mixins",
+	"plugin": "com.github.eason120806.carpetcrsaddition.utils.CRSMixinConfigPlugin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"carpet.SettingsManagerMixin",
+		"rule.ProjectileBackport.ProjectileEntityMixin",
+		"rule.ProjectileBackport.ExplosiveProjectileEntityMixin",
+		"rule.ProjectileBackport.PersistentProjectileEntityMixin",
+		"rule.ProjectileBackport.ThrownEntityMixin",
+		"rule.ProjectileBackport.ProjectileUtilMixin",
+		"rule.PearlLoadingChunks.EnderPearlEntityMixin",
+		"rule.PearlLoadingChunks.EntityMixin",
+		"rule.PearlLoadingChunks.PlayerManagerMixin",
+		"rule.PearlLoadingChunks.impl.EnderPearlEntityMixin",
+		"rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

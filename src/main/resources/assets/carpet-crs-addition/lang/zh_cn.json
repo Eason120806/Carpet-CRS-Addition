@@ -1,0 +1,8 @@
+{
+  "carpet-crs-addition.category.CRS": "CRS",
+  "carpet-crs-addition.category.Projectile": "投掷物",
+  "carpet-crs-addition.rule.UseV1212ProjectileLogic.name": "使用1.21.2投掷物逻辑",
+  "carpet-crs-addition.rule.UseV1212ProjectileLogic.desc": "将1.21.2的投掷物工作逻辑移植到1.21.1",
+  "carpet-crs-addition.rule.PearlCanLoadingChunks.name": "末影珍珠可加载区块",
+  "carpet-crs-addition.rule.PearlCanLoadingChunks.desc": "末影珍珠可以像1.21.2+那样加载区块"
+}
