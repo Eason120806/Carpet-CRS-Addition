@@ -20,16 +20,19 @@
 
 package com.github.eason120806.carpetcrsaddition;
 
-import carpet.api.settings.Rule;
+import dev.anvilcraft.rg.api.Rule;
+import dev.anvilcraft.rg.api.server.RGServerRules;
 
-@SuppressWarnings("unused")
+@RGServerRules(value = CarpetCRSAddition.MOD_ID, languages = {"en_us", "zh_cn"})
 public class CRSSettings {
-    private static final String CRS = "CRS";
-    private static final String PROJECTILE = "Projectile";
 
-    @Rule(categories = {CRS, PROJECTILE})
+    @Rule(
+            categories = {"crs", "projectile"}
+    )
     public static boolean UseV1212ProjectileLogic = false;
 
-    @Rule(categories = {CRS, PROJECTILE})
+    @Rule(
+            categories = {"crs", "projectile"}
+    )
     public static boolean PearlCanLoadingChunks = false;
 }

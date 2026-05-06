@@ -21,10 +21,10 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,26 +33,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ProjectileEntity.class)
+@Mixin(Projectile.class)
 public abstract class ProjectileEntityMixin extends Entity {
 
     @Shadow
     private boolean leftOwner;
 
     @Shadow
-    private boolean shot;
+    private boolean hasBeenShot;
 
-    public ProjectileEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
+    public ProjectileEntityMixin(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
     @Shadow
     @Nullable
     public abstract Entity getOwner();
 
-    /**
-     * 1.21.2: tick() 统一处理 GameEvent.PROJECTILE_SHOOT 和 leftOwner 逻辑
-     */
     @Inject(
             method = "tick",
             at = @At("HEAD")
@@ -60,8 +57,8 @@ public abstract class ProjectileEntityMixin extends Entity {
     private void tickMixin(CallbackInfo ci) {
         if (!CRSSettings.UseV1212ProjectileLogic) return;
 
-        if (!this.shot) {
-            this.shot = true;
+        if (!this.hasBeenShot) {
+            this.hasBeenShot = true;
         }
 
         if (!this.leftOwner) {
@@ -73,12 +70,12 @@ public abstract class ProjectileEntityMixin extends Entity {
     private boolean shouldLeaveOwner() {
         Entity entity = this.getOwner();
         if (entity != null) {
-            for (Entity passenger : entity.getRootVehicle().getPassengersDeep()) {
-                if (this.getBoundingBox().stretch(this.getVelocity()).expand(1.0).intersects(passenger.getBoundingBox())) {
+            for (Entity passenger : entity.getRootVehicle().getIndirectPassengers()) {
+                if (this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0).intersects(passenger.getBoundingBox())) {
                     return false;
                 }
             }
-            return !this.getBoundingBox().stretch(this.getVelocity()).expand(1.0).intersects(entity.getRootVehicle().getBoundingBox());
+            return !this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0).intersects(entity.getRootVehicle().getBoundingBox());
         }
         return true;
     }

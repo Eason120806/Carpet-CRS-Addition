@@ -22,8 +22,8 @@ package com.github.eason120806.carpetcrsaddition.mixins.rule.PearlLoadingChunks;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
 import com.github.eason120806.carpetcrsaddition.interfaces.EnderPearlEntityInterface;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,7 +39,7 @@ public abstract class EntityMixin {
         if (!CRSSettings.PearlCanLoadingChunks) return;
 
         if (
-                (Entity) (Object) this instanceof EnderPearlEntity enderPearlEntity
+                (Entity) (Object) this instanceof ThrownEnderpearl enderPearlEntity
                         && reason != Entity.RemovalReason.UNLOADED_WITH_PLAYER
         ) {
             ((EnderPearlEntityInterface) enderPearlEntity).pearl$removeFromOwner();

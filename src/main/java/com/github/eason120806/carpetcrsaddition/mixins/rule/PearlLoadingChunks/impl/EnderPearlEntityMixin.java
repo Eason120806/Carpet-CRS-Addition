@@ -22,24 +22,24 @@ package com.github.eason120806.carpetcrsaddition.mixins.rule.PearlLoadingChunks.
 
 import com.github.eason120806.carpetcrsaddition.interfaces.EnderPearlEntityInterface;
 import com.github.eason120806.carpetcrsaddition.interfaces.ServerPlayerEntityInterface;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(EnderPearlEntity.class)
-public abstract class EnderPearlEntityMixin extends ThrownItemEntity implements EnderPearlEntityInterface {
-    public EnderPearlEntityMixin(EntityType<? extends ThrownItemEntity> entityType, World world) {
-        super(entityType, world);
+@Mixin(ThrownEnderpearl.class)
+public abstract class EnderPearlEntityMixin extends ThrowableItemProjectile implements EnderPearlEntityInterface {
+    public EnderPearlEntityMixin(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override
     public void pearl$removeFromOwner() {
-        if (this.getOwner() instanceof ServerPlayerEntity serverPlayerEntity) {
+        if (this.getOwner() instanceof ServerPlayer serverPlayerEntity) {
             ((ServerPlayerEntityInterface) serverPlayerEntity).pearl$removeEnderPearl(
-                    (EnderPearlEntity) (Object) this
+                    (ThrownEnderpearl) (Object) this
             );
         }
     }

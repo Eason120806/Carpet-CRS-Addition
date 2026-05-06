@@ -22,26 +22,26 @@ package com.github.eason120806.carpetcrsaddition.mixins.rule.PearlLoadingChunks;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
 import com.github.eason120806.carpetcrsaddition.interfaces.ServerPlayerEntityInterface;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerManager.class)
+@Mixin(PlayerList.class)
 public abstract class PlayerManagerMixin {
     @Inject(
             method = "remove",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/world/ServerWorld;" +
-                            "removePlayer(Lnet/minecraft/server/network/ServerPlayerEntity;" +
-                            "Lnet/minecraft/entity/Entity$RemovalReason;)V"
+                    target = "Lnet/minecraft/server/level/ServerLevel;" +
+                            "removePlayerImmediately(Lnet/minecraft/server/level/ServerPlayer;" +
+                            "Lnet/minecraft/world/entity/Entity$RemovalReason;)V"
             )
     )
-    private void removeMixin(ServerPlayerEntity player, CallbackInfo ci) {
+    private void removeMixin(ServerPlayer player, CallbackInfo ci) {
         if (CRSSettings.PearlCanLoadingChunks) {
             ((ServerPlayerEntityInterface) player).pearl$getEnderPearls().forEach(
                     enderPearlEntity -> enderPearlEntity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER)

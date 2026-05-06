@@ -1,0 +1,8 @@
+{
+  "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic": "Use 1.21.2 Projectile Logic",
+  "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic.desc": "Backports 1.21.2 projectile work logic to 1.21.1",
+  "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks": "Pearl Can Load Chunks",
+  "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks.desc": "Ender pearls can load chunks like in 1.21.2+",
+  "rolling_gate.category.crs": "CRS",
+  "rolling_gate.category.projectile": "Projectile"
+}

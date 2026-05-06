@@ -21,19 +21,17 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ProjectileDeflection;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -42,16 +40,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
-
-@Mixin(PersistentProjectileEntity.class)
-public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
+@Mixin(AbstractArrow.class)
+public abstract class PersistentProjectileEntityMixin extends Projectile {
 
     @Shadow
     protected int inGroundTime;
 
-    public PersistentProjectileEntityMixin(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    @Shadow
+    protected boolean inGround;
+
+    public PersistentProjectileEntityMixin(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     /**
@@ -71,40 +70,40 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
     @Unique
     private void onV1212Tick() {
-        boolean bl = !this.isNoClip();
-        Vec3d vec3d = this.getVelocity();
+        boolean bl = !this.isNoPhysics();
+        Vec3 vec3d = this.getDeltaMovement();
 
-        if (this.isInGround() && bl) {
-            if (!this.getWorld().isClient()) {
-                this.age();
+        if (this.inGround && bl) {
+            if (!this.level().isClientSide()) {
+                this.tickDespawn();
             }
             ++this.inGroundTime;
             if (this.isAlive()) {
-                this.checkBlockCollision();
+                this.checkInsideBlocks();
             }
         } else {
             this.inGroundTime = 0;
-            Vec3d vec3d3 = this.getPos();
+            Vec3 vec3d3 = this.position();
 
-            if (this.isTouchingWater()) {
+            if (this.isInWater()) {
                 this.spawnBubbleParticles(vec3d3);
             }
 
             if (bl) {
-                BlockHitResult blockHitResult = this.getWorld().raycast(
-                        new RaycastContext(vec3d3, vec3d3.add(vec3d),
-                                RaycastContext.ShapeType.COLLIDER,
-                                RaycastContext.FluidHandling.NONE, this)
+                BlockHitResult blockHitResult = this.level().clip(
+                        new ClipContext(vec3d3, vec3d3.add(vec3d),
+                                ClipContext.Block.COLLIDER,
+                                ClipContext.Fluid.NONE, this)
                 );
                 this.applyCollision(blockHitResult);
             } else {
-                this.setPosition(vec3d3.add(vec3d));
-                this.checkBlockCollision();
+                this.setPos(vec3d3.add(vec3d));
+                this.checkInsideBlocks();
             }
 
             this.applyDrag1212();
 
-            if (bl && !this.isInGround()) {
+            if (bl && !this.inGround) {
                 this.applyGravity();
             }
 
@@ -115,24 +114,24 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
     @Unique
     private void applyCollision(BlockHitResult blockHitResult) {
         if (this.isAlive()) {
-            Vec3d vec3d = this.getPos();
-            EntityHitResult entityHitResult = this.getEntityCollision(vec3d, blockHitResult.getPos());
-            Vec3d vec3d2 = ((HitResult) Objects.requireNonNullElse(entityHitResult, blockHitResult)).getPos();
-            this.setPosition(vec3d2);
+            Vec3 vec3d = this.position();
+            EntityHitResult entityHitResult = this.getEntityCollision(vec3d, blockHitResult.getLocation());
+            Vec3 vec3d2 = entityHitResult != null ? entityHitResult.getLocation() : blockHitResult.getLocation();
+            this.setPos(vec3d2);
 
-            if (this.portalManager != null && this.portalManager.isInPortal()) {
-                this.tickPortalTeleportation();
+            if (this.portalProcess != null && this.portalProcess.isInsidePortalThisTick()) {
+                this.handlePortal();
             }
 
             if (entityHitResult == null) {
                 if (this.isAlive() && blockHitResult.getType() != HitResult.Type.MISS) {
-                    this.hitOrDeflect(blockHitResult);
-                    this.velocityDirty = true;
+                    this.hitTargetOrDeflectSelf(blockHitResult);
+                    this.hasImpulse = true;
                 }
             } else {
                 if (this.isAlive()) {
-                    ProjectileDeflection projectileDeflection = this.hitOrDeflect(entityHitResult);
-                    this.velocityDirty = true;
+                    this.hitTargetOrDeflectSelf(entityHitResult);
+                    this.hasImpulse = true;
                 }
             }
         }
@@ -140,22 +139,23 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
     @Unique
     @Nullable
-    private EntityHitResult getEntityCollision(Vec3d currentPosition, Vec3d nextPosition) {
-        return ProjectileUtil.getEntityCollision(
-                this.getWorld(),
+    private EntityHitResult getEntityCollision(Vec3 currentPosition, Vec3 nextPosition) {
+        return ProjectileUtil.getEntityHitResult(
+                this.level(),
                 this,
                 currentPosition,
                 nextPosition,
-                this.getBoundingBox().stretch(this.getVelocity()).expand(1.0),
-                this::canHit
+                this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0),
+                this::canHitEntity
         );
     }
 
     @Unique
-    private void spawnBubbleParticles(Vec3d pos) {
-        Vec3d vec3d = this.getVelocity();
+    private void spawnBubbleParticles(Vec3 pos) {
+        Vec3 vec3d = this.getDeltaMovement();
+        Level level = this.level();
         for (int i = 0; i < 4; ++i) {
-            this.getWorld().addParticle(
+            level.addParticle(
                     ParticleTypes.BUBBLE,
                     pos.x - vec3d.x * 0.25,
                     pos.y - vec3d.y * 0.25,
@@ -167,23 +167,20 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
     @Unique
     private void applyDrag1212() {
-        Vec3d vec3d = this.getVelocity();
+        Vec3 vec3d = this.getDeltaMovement();
         float f = 0.99F;
-        if (this.isTouchingWater()) {
-            f = this.getDragInWater();
+        if (this.isInWater()) {
+            f = this.getWaterInertia();
         }
-        this.setVelocity(vec3d.multiply(f));
+        this.setDeltaMovement(vec3d.scale(f));
     }
 
-    @Unique
-    protected abstract boolean isInGround();
+    @Shadow
+    protected abstract boolean isNoPhysics();
 
     @Shadow
-    public abstract boolean isNoClip();
+    protected abstract void tickDespawn();
 
     @Shadow
-    protected abstract void age();
-
-    @Shadow
-    protected abstract float getDragInWater();
+    public abstract float getWaterInertia();
 }

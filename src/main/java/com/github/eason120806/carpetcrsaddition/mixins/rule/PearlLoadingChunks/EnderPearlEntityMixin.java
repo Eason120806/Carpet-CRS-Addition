@@ -25,27 +25,27 @@ import com.github.eason120806.carpetcrsaddition.utils.ChunkUtils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EnderPearlEntity.class)
-public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
+@Mixin(ThrownEnderpearl.class)
+public abstract class EnderPearlEntityMixin extends ThrowableItemProjectile {
 
     @Unique
     private long chunkTicketExpiryTicks = 0L;
 
-    public EnderPearlEntityMixin(EntityType<? extends ThrownItemEntity> entityType, World world) {
-        super(entityType, world);
+    public EnderPearlEntityMixin(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Inject(
@@ -54,8 +54,8 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     )
     private void getVector(CallbackInfo ci, @Share("i") LocalIntRef i, @Share("j") LocalIntRef j) {
         if (!CRSSettings.PearlCanLoadingChunks) return;
-        i.set(ChunkUtils.getSectionCoordFloored(this.getPos().getX()));
-        j.set(ChunkUtils.getSectionCoordFloored(this.getPos().getZ()));
+        i.set(ChunkUtils.getSectionCoordFloored(this.getX()));
+        j.set(ChunkUtils.getSectionCoordFloored(this.getZ()));
     }
 
     @Inject(
@@ -71,17 +71,17 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
         if (!CRSSettings.PearlCanLoadingChunks) return;
 
         if (this.isAlive()) {
-            BlockPos blockPos = BlockPos.ofFloored(this.getPos());
+            BlockPos blockPos = this.blockPosition();
             if (
                     (
                             --this.chunkTicketExpiryTicks <= 0L
                                     || i.get() != ChunkUtils.getSectionCoord(blockPos.getX())
                                     || j.get() != ChunkUtils.getSectionCoord(blockPos.getZ())
                     )
-                            && entity instanceof ServerPlayerEntity serverPlayerEntity
+                            && entity instanceof ServerPlayer serverPlayerEntity
             ) {
                 this.chunkTicketExpiryTicks = ((com.github.eason120806.carpetcrsaddition.interfaces.ServerPlayerEntityInterface) serverPlayerEntity)
-                        .pearl$handleThrownEnderPearl((EnderPearlEntity) (Object) this);
+                        .pearl$handleThrownEnderPearl((ThrownEnderpearl) (Object) this);
             }
         }
     }

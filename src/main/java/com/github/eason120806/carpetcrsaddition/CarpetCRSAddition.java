@@ -20,26 +20,27 @@
 
 package com.github.eason120806.carpetcrsaddition;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CarpetCRSAddition implements ModInitializer {
-	public static final String MOD_ID = "carpet-crs-addition";
+@Mod(CarpetCRSAddition.MOD_ID)
+public class CarpetCRSAddition {
+	public static final String MOD_ID = "carpet_crs_addition";
 	public static final String MOD_NAME = "Carpet CRS Addition";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-	public static String version;
 
-	@Override
-	public void onInitialize() {
-		version = FabricLoader.getInstance()
-				.getModContainer(MOD_ID)
-				.orElseThrow(RuntimeException::new)
-				.getMetadata()
-				.getVersion()
-				.getFriendlyString();
-		CRSExtension.init();
-		LOGGER.info("[CRS] Carpet CRS Addition v{} initialized!", version);
+	public CarpetCRSAddition(IEventBus modEventBus) {
+		LOGGER.info("[CRS] Carpet CRS Addition v{} initialized!", getVersion());
+	}
+
+	private static String getVersion() {
+		return net.neoforged.fml.loading.LoadingModList.get().getModFileById(MOD_ID)
+				.getMods().stream()
+				.filter(mod -> mod.getModId().equals(MOD_ID))
+				.findFirst()
+				.map(mod -> mod.getVersion().toString())
+				.orElse("unknown");
 	}
 }

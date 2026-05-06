@@ -21,35 +21,31 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.entity.projectile.thrown.ThrownEntity;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ThrownEntity.class)
-public abstract class ThrownEntityMixin extends ProjectileEntity {
+@Mixin(ThrowableProjectile.class)
+public abstract class ThrownEntityMixin extends Projectile {
 
-    public ThrownEntityMixin(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public ThrownEntityMixin(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    /**
-     * 1.21.2: tick() 重构 - 使用 applyDrag() 并调用 super.tick()
-     */
     @Inject(
             method = "tick",
             at = @At("HEAD"),
@@ -68,33 +64,33 @@ public abstract class ThrownEntityMixin extends ProjectileEntity {
         this.applyGravity();
         this.applyDrag1212();
 
-        HitResult hitResult = ProjectileUtil.getCollision(this, this::canHit);
-        Vec3d vec3d;
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        Vec3 vec3d;
         if (hitResult.getType() != HitResult.Type.MISS) {
-            vec3d = hitResult.getPos();
+            vec3d = hitResult.getLocation();
         } else {
-            vec3d = this.getPos().add(this.getVelocity());
+            vec3d = this.position().add(this.getDeltaMovement());
         }
 
-        this.setPosition(vec3d);
+        this.setPos(vec3d);
         this.updateRotation();
-        this.checkBlockCollision();
+        this.checkInsideBlocks();
         super.tick();
 
         if (hitResult.getType() != HitResult.Type.MISS && this.isAlive()) {
-            this.hitOrDeflect(hitResult);
+            this.hitTargetOrDeflectSelf(hitResult);
         }
     }
 
     @Unique
     private void applyDrag1212() {
-        Vec3d vec3d = this.getVelocity();
-        Vec3d vec3d2 = this.getPos();
+        Vec3 vec3d = this.getDeltaMovement();
+        Vec3 vec3d2 = this.position();
         float g;
-        if (this.isTouchingWater()) {
+        if (this.isInWater()) {
             for (int i = 0; i < 4; ++i) {
                 float f = 0.25F;
-                this.getWorld().addParticle(
+                this.level().addParticle(
                         ParticleTypes.BUBBLE,
                         vec3d2.x - vec3d.x * (double) 0.25F,
                         vec3d2.y - vec3d.y * (double) 0.25F,
@@ -106,25 +102,22 @@ public abstract class ThrownEntityMixin extends ProjectileEntity {
         } else {
             g = 0.99F;
         }
-        this.setVelocity(vec3d.multiply(g));
+        this.setDeltaMovement(vec3d.scale(g));
     }
 
     @Unique
     private void tickInitialBubbleColumnCollision() {
-        if (this.firstUpdate) {
-            Box box = this.getBoundingBox();
-            BlockPos.stream(
-                    BlockPos.ofFloored(box.minX, box.minY, box.minZ),
-                    BlockPos.ofFloored(box.maxX, box.maxY, box.maxZ)
+        if (this.firstTick) {
+            AABB box = this.getBoundingBox();
+            BlockPos.betweenClosedStream(
+                    BlockPos.containing(box.minX, box.minY, box.minZ),
+                    BlockPos.containing(box.maxX, box.maxY, box.maxZ)
             ).forEach(blockPos -> {
-                BlockState blockState = this.getWorld().getBlockState(blockPos);
-                if (blockState.isOf(Blocks.BUBBLE_COLUMN)) {
-                    blockState.onEntityCollision(this.getWorld(), blockPos, this);
+                BlockState blockState = this.level().getBlockState(blockPos);
+                if (blockState.is(Blocks.BUBBLE_COLUMN)) {
+                    blockState.entityInside(this.level(), blockPos, this);
                 }
             });
         }
     }
-
-    @Shadow
-    protected abstract double getGravity();
 }

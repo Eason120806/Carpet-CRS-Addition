@@ -1,0 +1,8 @@
+{
+  "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic": "使用1.21.2投掷物逻辑",
+  "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic.desc": "将1.21.2的投掷物工作逻辑移植到1.21.1",
+  "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks": "末影珍珠可加载区块",
+  "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks.desc": "末影珍珠可以像1.21.2+那样加载区块",
+  "rolling_gate.category.crs": "CRS",
+  "rolling_gate.category.projectile": "投掷物"
+}

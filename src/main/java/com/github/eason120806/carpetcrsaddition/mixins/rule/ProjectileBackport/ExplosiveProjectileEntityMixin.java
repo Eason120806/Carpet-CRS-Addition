@@ -21,16 +21,16 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,19 +38,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ExplosiveProjectileEntity.class)
-public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntity {
+@Mixin(AbstractHurtingProjectile.class)
+public abstract class ExplosiveProjectileEntityMixin extends Projectile {
 
-    @Shadow
-    public double accelerationPower;
-
-    public ExplosiveProjectileEntityMixin(EntityType<? extends ProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public ExplosiveProjectileEntityMixin(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    /**
-     * 1.21.2: tick() 重构 - 使用 applyDrag(), addParticles(), hitOrDeflect()
-     */
     @Inject(
             method = "tick",
             at = @At("HEAD"),
@@ -68,26 +62,26 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntity {
         Entity entity = this.getOwner();
         this.apply1212Drag();
 
-        if (this.getWorld().isClient || (entity == null || !entity.isRemoved()) && this.getWorld().isChunkLoaded(this.getBlockPos())) {
-            HitResult hitResult = ProjectileUtil.getCollision(this, this::canHit, this.getRaycastShapeType());
-            Vec3d vec3d;
+        if (this.level().isClientSide || (entity == null || !entity.isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
+            HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+            Vec3 vec3d;
             if (hitResult.getType() != HitResult.Type.MISS) {
-                vec3d = hitResult.getPos();
+                vec3d = hitResult.getLocation();
             } else {
-                vec3d = this.getPos().add(this.getVelocity());
+                vec3d = this.position().add(this.getDeltaMovement());
             }
 
-            ProjectileUtil.setRotationFromVelocity(this, 0.2F);
-            this.setPosition(vec3d);
-            this.checkBlockCollision();
+            ProjectileUtil.rotateTowardsMovement(this, 0.2F);
+            this.setPos(vec3d);
+            this.checkInsideBlocks();
             super.tick();
 
-            if (this.isBurning()) {
-                this.setOnFireFor(1.0F);
+            if (this.isOnFire()) {
+                this.setRemainingFireTicks(1);
             }
 
             if (hitResult.getType() != HitResult.Type.MISS && this.isAlive()) {
-                this.hitOrDeflect(hitResult);
+                this.hitTargetOrDeflectSelf(hitResult);
             }
 
             this.add1212Particles();
@@ -98,34 +92,35 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntity {
 
     @Unique
     private void apply1212Drag() {
-        Vec3d vec3d = this.getVelocity();
-        Vec3d vec3d2 = this.getPos();
+        Vec3 vec3d = this.getDeltaMovement();
+        Vec3 vec3d2 = this.position();
         float g;
-        if (this.isTouchingWater()) {
+        if (this.isInWater()) {
+            Level level = this.level();
             for (int i = 0; i < 4; ++i) {
-                float f = 0.25F;
-                this.getWorld().addParticle(
+                level.addParticle(
                         ParticleTypes.BUBBLE,
-                        vec3d2.x - vec3d.x * (double) 0.25F,
-                        vec3d2.y - vec3d.y * (double) 0.25F,
-                        vec3d2.z - vec3d.z * (double) 0.25F,
+                        vec3d2.x - vec3d.x * 0.25,
+                        vec3d2.y - vec3d.y * 0.25,
+                        vec3d2.z - vec3d.z * 0.25,
                         vec3d.x, vec3d.y, vec3d.z
                 );
             }
-            g = this.getDragInWater();
+            g = this.getWaterInertia();
         } else {
-            g = this.getDrag();
+            g = this.getInertia();
         }
 
-        this.setVelocity(vec3d.add(vec3d.normalize().multiply(this.accelerationPower)).multiply(g));
+        Vec3 acceleration = vec3d.normalize().scale(this.getAccelerationPower());
+        this.setDeltaMovement(vec3d.add(acceleration).scale(g));
     }
 
     @Unique
     private void add1212Particles() {
-        ParticleEffect particleEffect = this.getParticleType();
-        Vec3d vec3d = this.getPos();
+        ParticleOptions particleEffect = this.getTrailParticle();
+        Vec3 vec3d = this.position();
         if (particleEffect != null) {
-            this.getWorld().addParticle(
+            this.level().addParticle(
                     particleEffect,
                     vec3d.x, vec3d.y + 0.5, vec3d.z,
                     0.0, 0.0, 0.0
@@ -133,18 +128,26 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntity {
         }
     }
 
-    @Shadow
-    protected abstract net.minecraft.world.RaycastContext.ShapeType getRaycastShapeType();
+    @Unique
+    private double getAccelerationPower() {
+        return Math.sqrt(
+                this.xPower * this.xPower +
+                        this.yPower * this.yPower +
+                        this.zPower * this.zPower
+        );
+    }
+
+    public double xPower;
+
+    public double yPower;
+
+    public double zPower;
 
     @Shadow
-    protected abstract boolean isBurning();
+    protected abstract float getInertia();
+
+    protected abstract float getWaterInertia();
 
     @Shadow
-    protected abstract float getDrag();
-
-    @Shadow
-    protected abstract float getDragInWater();
-
-    @Shadow
-    protected abstract ParticleEffect getParticleType();
+    protected abstract ParticleOptions getTrailParticle();
 }

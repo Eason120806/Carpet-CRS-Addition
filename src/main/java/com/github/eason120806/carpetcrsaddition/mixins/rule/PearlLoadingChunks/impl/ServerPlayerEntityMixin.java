@@ -22,45 +22,45 @@ package com.github.eason120806.carpetcrsaddition.mixins.rule.PearlLoadingChunks.
 
 import com.github.eason120806.carpetcrsaddition.interfaces.ServerPlayerEntityInterface;
 import com.github.eason120806.carpetcrsaddition.utils.ChunkUtils;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.level.ChunkPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Mixin(ServerPlayerEntity.class)
+@Mixin(ServerPlayer.class)
 public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityInterface {
     @Unique
-    private final Set<EnderPearlEntity> enderPearls = new HashSet<>();
+    private final Set<ThrownEnderpearl> enderPearls = new HashSet<>();
 
     @Override
-    public long pearl$handleThrownEnderPearl(EnderPearlEntity enderPearl) {
-        if (enderPearl.getWorld() instanceof ServerWorld serverWorld) {
-            ChunkPos chunkPos = enderPearl.getChunkPos();
+    public long pearl$handleThrownEnderPearl(ThrownEnderpearl enderPearl) {
+        if (enderPearl.level() instanceof ServerLevel serverLevel) {
+            ChunkPos chunkPos = enderPearl.chunkPosition();
             this.pearl$addEnderPearl(enderPearl);
-            serverWorld.resetIdleTimeout();
-            return ChunkUtils.addEnderPearlTicket(serverWorld, chunkPos) - 1L;
+            serverLevel.resetEmptyTime();
+            return ChunkUtils.addEnderPearlTicket(serverLevel, chunkPos) - 1L;
         } else {
             return 0L;
         }
     }
 
     @Override
-    public void pearl$addEnderPearl(EnderPearlEntity enderPearl) {
+    public void pearl$addEnderPearl(ThrownEnderpearl enderPearl) {
         this.enderPearls.add(enderPearl);
     }
 
     @Override
-    public void pearl$removeEnderPearl(EnderPearlEntity enderPearl) {
+    public void pearl$removeEnderPearl(ThrownEnderpearl enderPearl) {
         this.enderPearls.remove(enderPearl);
     }
 
     @Override
-    public Set<EnderPearlEntity> pearl$getEnderPearls() {
+    public Set<ThrownEnderpearl> pearl$getEnderPearls() {
         return this.enderPearls;
     }
 }

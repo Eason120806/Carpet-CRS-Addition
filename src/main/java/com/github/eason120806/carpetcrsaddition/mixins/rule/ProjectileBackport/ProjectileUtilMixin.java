@@ -21,10 +21,10 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,11 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ProjectileUtil.class)
 public abstract class ProjectileUtilMixin {
 
-    /**
-     * 1.21.2: setRotationFromVelocity 使用不同的旋转计算方式
-     */
     @Inject(
-            method = "setRotationFromVelocity",
+            method = "rotateTowardsMovement",
             at = @At("HEAD"),
             cancellable = true
     )
@@ -45,27 +42,27 @@ public abstract class ProjectileUtilMixin {
         if (!CRSSettings.UseV1212ProjectileLogic) return;
 
         ci.cancel();
-        Vec3d vec3d = entity.getVelocity();
-        if (vec3d.lengthSquared() != 0.0) {
-            double d = vec3d.horizontalLength();
-            entity.setYaw((float) (MathHelper.atan2(vec3d.z, vec3d.x) * (180F / Math.PI)) + 90.0F);
-            entity.setPitch((float) (MathHelper.atan2(d, vec3d.y) * (180F / Math.PI)) - 90.0F);
+        Vec3 vec3d = entity.getDeltaMovement();
+        if (vec3d.lengthSqr() != 0.0) {
+            double d = vec3d.horizontalDistance();
+            entity.setYRot((float) (Mth.atan2(vec3d.z, vec3d.x) * (180F / Math.PI)) + 90.0F);
+            entity.setXRot((float) (Mth.atan2(d, vec3d.y) * (180F / Math.PI)) - 90.0F);
 
-            while (entity.getPitch() - entity.prevPitch < -180.0F) {
-                entity.prevPitch -= 360.0F;
+            while (entity.getXRot() - entity.xRotO < -180.0F) {
+                entity.xRotO -= 360.0F;
             }
-            while (entity.getPitch() - entity.prevPitch >= 180.0F) {
-                entity.prevPitch += 360.0F;
+            while (entity.getXRot() - entity.xRotO >= 180.0F) {
+                entity.xRotO += 360.0F;
             }
-            while (entity.getYaw() - entity.prevYaw < -180.0F) {
-                entity.prevYaw -= 360.0F;
+            while (entity.getYRot() - entity.yRotO < -180.0F) {
+                entity.yRotO -= 360.0F;
             }
-            while (entity.getYaw() - entity.prevYaw >= 180.0F) {
-                entity.prevYaw += 360.0F;
+            while (entity.getYRot() - entity.yRotO >= 180.0F) {
+                entity.yRotO += 360.0F;
             }
 
-            entity.setPitch(MathHelper.lerp(delta, entity.prevPitch, entity.getPitch()));
-            entity.setYaw(MathHelper.lerp(delta, entity.prevYaw, entity.getYaw()));
+            entity.setXRot(Mth.lerp(delta, entity.xRotO, entity.getXRot()));
+            entity.setYRot(Mth.lerp(delta, entity.yRotO, entity.getYRot()));
         }
     }
 }

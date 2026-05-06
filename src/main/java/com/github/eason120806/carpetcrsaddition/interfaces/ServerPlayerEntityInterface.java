@@ -20,24 +20,24 @@
 
 package com.github.eason120806.carpetcrsaddition.interfaces;
 
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 
 import java.util.Set;
 
 public interface ServerPlayerEntityInterface {
-    default long pearl$handleThrownEnderPearl(EnderPearlEntity enderPearl) {
+    default long pearl$handleThrownEnderPearl(ThrownEnderpearl enderPearl) {
         throw new AssertionError();
     }
 
-    default void pearl$addEnderPearl(EnderPearlEntity enderPearl) {
+    default void pearl$addEnderPearl(ThrownEnderpearl enderPearl) {
         throw new AssertionError();
     }
 
-    default void pearl$removeEnderPearl(EnderPearlEntity enderPearl) {
+    default void pearl$removeEnderPearl(ThrownEnderpearl enderPearl) {
         throw new AssertionError();
     }
 
-    default Set<EnderPearlEntity> pearl$getEnderPearls() {
+    default Set<ThrownEnderpearl> pearl$getEnderPearls() {
         throw new AssertionError();
     }
 }
