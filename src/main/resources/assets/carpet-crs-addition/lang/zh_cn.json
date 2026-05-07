@@ -1,8 +1,11 @@
 {
   "carpet-crs-addition.category.CRS": "CRS",
-  "carpet-crs-addition.category.Projectile": "投掷物",
-  "carpet-crs-addition.rule.UseV1212ProjectileLogic.name": "使用1.21.2投掷物逻辑",
-  "carpet-crs-addition.rule.UseV1212ProjectileLogic.desc": "将1.21.2的投掷物工作逻辑移植到1.21.1",
+  "carpet-crs-addition.category.Porting": "移植",
+  "carpet-crs-addition.category.Creative": "创造",
+  "carpet-crs-addition.rule.UseV1212ProjectileLogic.name": "使用1.21.2弹射物逻辑",
+  "carpet-crs-addition.rule.UseV1212ProjectileLogic.desc": "将1.21.2的弹射物工作逻辑移植到1.21.1",
   "carpet-crs-addition.rule.PearlCanLoadingChunks.name": "末影珍珠可加载区块",
-  "carpet-crs-addition.rule.PearlCanLoadingChunks.desc": "末影珍珠可以像1.21.2+那样加载区块"
+  "carpet-crs-addition.rule.PearlCanLoadingChunks.desc": "末影珍珠可以像1.21.2+那样加载区块",
+  "carpet-crs-addition.rule.DragonAlwaysDropsMaxExperience.name": "末影龙每次掉落满经验",
+  "carpet-crs-addition.rule.DragonAlwaysDropsMaxExperience.desc": "末影龙每次死亡都像首次击杀一样掉落12000经验"
 }

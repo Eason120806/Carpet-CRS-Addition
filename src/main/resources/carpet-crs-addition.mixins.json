@@ -14,7 +14,8 @@
 		"rule.PearlLoadingChunks.EntityMixin",
 		"rule.PearlLoadingChunks.PlayerManagerMixin",
 		"rule.PearlLoadingChunks.impl.EnderPearlEntityMixin",
-		"rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin"
+		"rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin",
+		"rule.DragonAlwaysDropsMaxExperience.EnderDragonFightMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

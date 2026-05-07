@@ -25,11 +25,15 @@ import carpet.api.settings.Rule;
 @SuppressWarnings("unused")
 public class CRSSettings {
     private static final String CRS = "CRS";
-    private static final String PROJECTILE = "Projectile";
+    private static final String PORTING = "Porting";
+    private static final String CREATIVE = "Creative";
 
-    @Rule(categories = {CRS, PROJECTILE})
+    @Rule(categories = {CRS, PORTING})
     public static boolean UseV1212ProjectileLogic = false;
 
-    @Rule(categories = {CRS, PROJECTILE})
+    @Rule(categories = {CRS, PORTING})
     public static boolean PearlCanLoadingChunks = false;
+
+    @Rule(categories = {CRS, CREATIVE})
+    public static boolean DragonAlwaysDropsMaxExperience = false;
 }
