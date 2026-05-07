@@ -2,10 +2,13 @@
   "carpet-crs-addition.category.CRS": "CRS",
   "carpet-crs-addition.category.Porting": "Porting",
   "carpet-crs-addition.category.Creative": "Creative",
+  "carpet-crs-addition.category.Experimental": "Experimental",
   "carpet-crs-addition.rule.UseV1212ProjectileLogic.name": "Use 1.21.2 Projectile Logic",
   "carpet-crs-addition.rule.UseV1212ProjectileLogic.desc": "Backports 1.21.2 projectile work logic to 1.21.1",
   "carpet-crs-addition.rule.PearlCanLoadingChunks.name": "Pearl Can Load Chunks",
   "carpet-crs-addition.rule.PearlCanLoadingChunks.desc": "Ender pearls can load chunks like in 1.21.2+",
-  "carpet-crs-addition.rule.DragonAlwaysDropsMaxExperience.name": "Dragon Always Drops Max Experience",
-  "carpet-crs-addition.rule.DragonAlwaysDropsMaxExperience.desc": "Ender dragon always drops 12000 experience like the first kill"
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.name": "Dragon Always Drops First Kill XP",
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.desc": "Ender dragon always drops 12000 XP like the first kill",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.name": "Remove Experience Cooldown",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.desc": "Remove experience orb pickup cooldown and allow instant absorption"
 }

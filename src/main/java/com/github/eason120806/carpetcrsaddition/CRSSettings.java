@@ -27,6 +27,7 @@ public class CRSSettings {
     private static final String CRS = "CRS";
     private static final String PORTING = "Porting";
     private static final String CREATIVE = "Creative";
+    private static final String EXPERIMENTAL = "Experimental";
 
     @Rule(categories = {CRS, PORTING})
     public static boolean UseV1212ProjectileLogic = false;
@@ -35,5 +36,8 @@ public class CRSSettings {
     public static boolean PearlCanLoadingChunks = false;
 
     @Rule(categories = {CRS, CREATIVE})
-    public static boolean DragonAlwaysDropsMaxExperience = false;
+    public static boolean DragonAlwaysDropsFirstKillXP = false;
+
+    @Rule(categories = {CRS, CREATIVE, EXPERIMENTAL})
+    public static boolean RemoveExperienceCooldown = false;
 }
