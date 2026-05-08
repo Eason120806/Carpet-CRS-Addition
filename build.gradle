@@ -95,7 +95,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "carpet-crs-addition" + "-" + minecraft_version + "-" +"neo-rg"
 }
 
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
@@ -221,7 +221,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     ]
     inputs.properties replaceProperties
     expand replaceProperties
-    from "src/main/templates"
+    from "src/main/META-INF"
     into "build/generated/sources/modMetadata"
 }
 // Include the output of "generateModMetadata" as an input directory for the build

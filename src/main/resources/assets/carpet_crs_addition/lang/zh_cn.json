@@ -3,6 +3,12 @@
   "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic.desc": "将1.21.2的投掷物工作逻辑移植到1.21.1",
   "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks": "末影珍珠可加载区块",
   "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks.desc": "末影珍珠可以像1.21.2+那样加载区块",
-  "rolling_gate.category.crs": "CRS",
-  "rolling_gate.category.projectile": "投掷物"
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.name": "末影龙始终掉落首杀经验",
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.desc": "末影龙每次死亡都像首次击杀一样掉落12000经验",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.name": "经验吸收速度无上限",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.desc": "移除经验球吸收冷却，使玩家可以瞬间吸收所有经验球",
+  "rolling_gate.category.CRS": "CRS",
+  "rolling_gate.category.Porting": "移植",
+  "rolling_gate.category.Creative": "创造",
+  "rolling_gate.category.Experimental": "实验性"
 }

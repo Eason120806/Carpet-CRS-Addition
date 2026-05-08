@@ -3,6 +3,12 @@
   "carpet_crs_addition.rolling_gate.rule.use_v1212projectile_logic.desc": "Backports 1.21.2 projectile work logic to 1.21.1",
   "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks": "Pearl Can Load Chunks",
   "carpet_crs_addition.rolling_gate.rule.pearl_can_loading_chunks.desc": "Ender pearls can load chunks like in 1.21.2+",
-  "rolling_gate.category.crs": "CRS",
-  "rolling_gate.category.projectile": "Projectile"
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.name": "Dragon Always Drops First Kill XP",
+  "carpet-crs-addition.rule.DragonAlwaysDropsFirstKillXP.desc": "Ender dragon always drops 12000 XP like the first kill",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.name": "Remove Experience Cooldown",
+  "carpet-crs-addition.rule.RemoveExperienceCooldown.desc": "Remove experience orb pickup cooldown and allow instant absorption",
+  "rolling_gate.category.CRS": "CRS",
+  "rolling_gate.category.Porting": "Porting",
+  "rolling_gate.category.Creative": "Creative",
+  "rolling_gate.category.Experimental": "Experimental"
 }

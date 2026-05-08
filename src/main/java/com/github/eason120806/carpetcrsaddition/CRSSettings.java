@@ -27,12 +27,22 @@ import dev.anvilcraft.rg.api.server.RGServerRules;
 public class CRSSettings {
 
     @Rule(
-            categories = {"crs", "projectile"}
+            categories = {"CRS", "Porting"}
     )
     public static boolean UseV1212ProjectileLogic = false;
 
     @Rule(
-            categories = {"crs", "projectile"}
+            categories = {"CRS", "Porting"}
     )
     public static boolean PearlCanLoadingChunks = false;
+
+    @Rule(
+            categories = {"CRS", "Creative"}
+    )
+    public static boolean DragonAlwaysDropsFirstKillXP = false;
+
+    @Rule(
+            categories = {"CRS", "Creative", "Experimental"}
+    )
+    public static boolean RemoveExperienceCooldown = false;
 }

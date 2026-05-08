@@ -12,7 +12,9 @@
     "rule.PearlLoadingChunks.EntityMixin",
     "rule.PearlLoadingChunks.PlayerManagerMixin",
     "rule.PearlLoadingChunks.impl.EnderPearlEntityMixin",
-    "rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin"
+    "rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin",
+    "rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
+    "rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
