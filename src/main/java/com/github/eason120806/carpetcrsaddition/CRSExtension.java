@@ -28,11 +28,6 @@ import carpet.utils.Translations;
 import java.util.Map;
 
 public class CRSExtension implements CarpetExtension {
-    public static final SettingsManager CRSSettingsManager = new SettingsManager(
-            CarpetCRSAddition.version,
-            CarpetCRSAddition.MOD_ID,
-            CarpetCRSAddition.MOD_NAME
-    );
 
     private static final CarpetExtension INSTANCE = new CRSExtension();
 
@@ -42,7 +37,7 @@ public class CRSExtension implements CarpetExtension {
 
     @Override
     public void onGameStarted() {
-        CRSSettingsManager.parseSettingsClass(CRSSettings.class);
+        CarpetServer.settingsManager.parseSettingsClass(CRSSettings.class);
     }
 
     @Override
@@ -52,7 +47,7 @@ public class CRSExtension implements CarpetExtension {
 
     @Override
     public SettingsManager extensionSettingsManager() {
-        return CRSSettingsManager;
+        return null;
     }
 
     @Override

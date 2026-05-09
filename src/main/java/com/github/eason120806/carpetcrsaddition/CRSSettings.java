@@ -25,9 +25,9 @@ import carpet.api.settings.Rule;
 @SuppressWarnings("unused")
 public class CRSSettings {
     private static final String CRS = "CRS";
-    private static final String PORTING = "Porting";
-    private static final String CREATIVE = "Creative";
-    private static final String EXPERIMENTAL = "Experimental";
+    private static final String PORTING = "porting";
+    private static final String CREATIVE = "creative";
+    private static final String EXPERIMENTAL = "experimental";
 
     @Rule(categories = {CRS, PORTING})
     public static boolean UseV1212ProjectileLogic = false;
