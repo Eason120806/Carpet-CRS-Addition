@@ -21,7 +21,6 @@
 package com.github.eason120806.carpetcrsaddition.mixins.rule.ProjectileBackport;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ProjectileDeflection;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -46,6 +45,9 @@ import java.util.Objects;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
+
+    @Shadow
+    protected boolean inGround;
 
     @Shadow
     protected int inGroundTime;
@@ -74,7 +76,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         boolean bl = !this.isNoClip();
         Vec3d vec3d = this.getVelocity();
 
-        if (this.isInGround() && bl) {
+        if (this.inGround && bl) {
             if (!this.getWorld().isClient()) {
                 this.age();
             }
@@ -104,7 +106,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
             this.applyDrag1212();
 
-            if (bl && !this.isInGround()) {
+            if (bl && !this.inGround) {
                 this.applyGravity();
             }
 
@@ -175,11 +177,8 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         this.setVelocity(vec3d.multiply(f));
     }
 
-    @Unique
-    protected abstract boolean isInGround();
-
     @Shadow
-    public abstract boolean isNoClip();
+    protected abstract boolean isNoClip();
 
     @Shadow
     protected abstract void age();
