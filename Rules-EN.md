@@ -43,3 +43,14 @@ Remove experience orb pickup cooldown and allow instant absorption
 - Default: `false`
 - Options: `false`, `true`
 - Categories: `CRS`, `Creative`, `Experimental`
+
+---
+
+### UseV1216FireworkLogic
+
+Backports 1.21.6 projectile work logic to 1.21.1
+
+- Type: `boolean`
+- Default: `false`
+- Options: `false`, `true`
+- Categories: `CRS`, `Porting`
