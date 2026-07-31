@@ -15,7 +15,8 @@
 		"rule.ProjectileBackport.ProjectileUtilMixin",
 		"rule.ProjectileBackport.ThrownEntityMixin",
 		"rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
-		"rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin"
+		"rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin",
+		"rule.FireworkBackport.FireworkRocketEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

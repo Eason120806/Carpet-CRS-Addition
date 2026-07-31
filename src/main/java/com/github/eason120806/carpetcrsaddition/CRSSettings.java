@@ -40,4 +40,7 @@ public class CRSSettings {
 
     @Rule(categories = {CRS, CREATIVE, EXPERIMENTAL})
     public static boolean RemoveExperienceCooldown = false;
+
+    @Rule(categories = {CRS, PORTING})
+    public static boolean UseV1216FireworkLogic = false;
 }

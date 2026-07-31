@@ -10,5 +10,7 @@
   "carpet.rule.DragonAlwaysDropsFirstKillXP.name": "Dragon Always Drops First Kill XP",
   "carpet.rule.DragonAlwaysDropsFirstKillXP.desc": "Ender dragon always drops 12000 XP like the first kill",
   "carpet.rule.RemoveExperienceCooldown.name": "Remove Experience Cooldown",
-  "carpet.rule.RemoveExperienceCooldown.desc": "Remove experience orb pickup cooldown and allow instant absorption"
+  "carpet.rule.RemoveExperienceCooldown.desc": "Remove experience orb pickup cooldown and allow instant absorption",
+  "carpet.rule.UseV1216FireworkLogic.name": "Use 1.21.6 Firework Logic",
+  "carpet.rule.UseV1216FireworkLogic.desc": "Backports 1.21.6 Firework work logic to 1.21.1"
 }
