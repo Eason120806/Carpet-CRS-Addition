@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,16 +30,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.OptionalInt;
 
-@Mixin(value = FireworkRocketEntity.class, priority = 2000)
+@Mixin(FireworkRocketEntity.class)
 public abstract class FireworkRocketEntityMixin extends ProjectileEntity {
 
     @Shadow private int life;
     @Shadow private int lifeTime;
     @Shadow @Nullable private LivingEntity shooter;
-    @Shadow private static TrackedData<OptionalInt> SHOOTER_ENTITY_ID;
+
+    @Shadow @Final private static TrackedData<OptionalInt> SHOOTER_ENTITY_ID;
 
     @Shadow private boolean wasShotByEntity() { return false; }
-    @Shadow private boolean wasShotAtAngle() { return false; }
+
+    @Shadow public boolean wasShotAtAngle() { return false; }
     @Shadow private void explodeAndRemove() {}
     @Shadow private boolean hasExplosionEffects() { return false; }
 
@@ -49,15 +52,13 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntity {
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void onTick(CallbackInfo ci) {
         if (!CRSSettings.UseV1216FireworkLogic) {
-            return; // 规则关闭，走原版逻辑
+            return;
         }
 
-        // ---- 以下为 1.21.6 逻辑 ----
-        super.tick(); // 替代原版 super.tick()
+        super.tick();
         HitResult hitResult;
 
         if (this.wasShotByEntity()) {
-            // 延迟加载 shooter
             if (this.shooter == null) {
                 this.dataTracker.get(SHOOTER_ENTITY_ID).ifPresent(id -> {
                     Entity entity = this.getWorld().getEntityById(id);
@@ -116,7 +117,7 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntity {
 
         this.life++;
 
-        if (this.getWorld().isClient && this.life % 2 < 2) {
+        if (this.getWorld().isClient && this.life % 2 < 1) {
             this.getWorld().addParticle(ParticleTypes.FIREWORK,
                     this.getX(), this.getY(), this.getZ(),
                     this.random.nextGaussian() * 0.05,
@@ -128,13 +129,12 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntity {
             this.explodeAndRemove();
         }
 
-        ci.cancel(); // 阻止原版 tick() 执行
+        ci.cancel();
     }
 
     @Inject(method = "onEntityHit", at = @At("HEAD"), cancellable = true)
     protected void onEntityHit(EntityHitResult entityHitResult, CallbackInfo ci) {
         if (!CRSSettings.UseV1216FireworkLogic) return;
-        // 1.21.6：命中实体总是爆炸
         super.onEntityHit(entityHitResult);
         this.explodeAndRemove();
         ci.cancel();
@@ -143,7 +143,6 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntity {
     @Inject(method = "onBlockHit", at = @At("HEAD"), cancellable = true)
     protected void onBlockHit(BlockHitResult blockHitResult, CallbackInfo ci) {
         if (!CRSSettings.UseV1216FireworkLogic) return;
-        // 1.21.6：保留爆炸条件，并调用父类方法
         BlockPos blockPos = blockHitResult.getBlockPos();
         BlockState state = this.getWorld().getBlockState(blockPos);
         state.onEntityCollision(this.getWorld(), blockPos, this);

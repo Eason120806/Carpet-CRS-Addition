@@ -28,6 +28,7 @@ public class CRSSettings {
     private static final String PORTING = "porting";
     private static final String CREATIVE = "creative";
     private static final String EXPERIMENTAL = "experimental";
+    private static final String OPTIMIZATION = "optimization";
 
     @Rule(categories = {CRS, PORTING})
     public static boolean UseV1212ProjectileLogic = false;
@@ -43,4 +44,7 @@ public class CRSSettings {
 
     @Rule(categories = {CRS, PORTING})
     public static boolean UseV1216FireworkLogic = false;
+
+    @Rule(categories = {CRS, OPTIMIZATION, EXPERIMENTAL})
+    public static boolean optimizedBoat = false;
 }

@@ -1,27 +1,28 @@
 {
-	"required": true,
-	"package": "com.github.eason120806.carpetcrsaddition.mixins",
-	"plugin": "com.github.eason120806.carpetcrsaddition.utils.CRSMixinConfigPlugin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"carpet.SettingsManagerMixin",
-		"rule.PearlLoadingChunks.EnderPearlEntityMixin",
-		"rule.PearlLoadingChunks.EntityMixin",
-		"rule.PearlLoadingChunks.PlayerManagerMixin",
-		"rule.PearlLoadingChunks.impl.EnderPearlEntityMixin",
-		"rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin",
-		"rule.ProjectileBackport.ExplosiveProjectileEntityMixin",
-		"rule.ProjectileBackport.ProjectileEntityMixin",
-		"rule.ProjectileBackport.ProjectileUtilMixin",
-		"rule.ProjectileBackport.ThrownEntityMixin",
-		"rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
-		"rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin",
-		"rule.FireworkBackport.FireworkRocketEntityMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "com.github.eason120806.carpetcrsaddition.mixins",
+  "plugin": "com.github.eason120806.carpetcrsaddition.utils.CRSMixinConfigPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "carpet.SettingsManagerMixin",
+    "rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
+    "rule.FireworkBackport.FireworkRocketEntityMixin",
+    "rule.optimizedBoat.BoatEntityMixin",
+    "rule.PearlLoadingChunks.EnderPearlEntityMixin",
+    "rule.PearlLoadingChunks.EntityMixin",
+    "rule.PearlLoadingChunks.PlayerManagerMixin",
+    "rule.PearlLoadingChunks.impl.EnderPearlEntityMixin",
+    "rule.PearlLoadingChunks.impl.ServerPlayerEntityMixin",
+    "rule.ProjectileBackport.ExplosiveProjectileEntityMixin",
+    "rule.ProjectileBackport.ProjectileEntityMixin",
+    "rule.ProjectileBackport.ProjectileUtilMixin",
+    "rule.ProjectileBackport.ThrownEntityMixin",
+    "rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }
