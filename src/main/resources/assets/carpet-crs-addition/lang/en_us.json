@@ -15,5 +15,7 @@
   "carpet.rule.UseV1216FireworkLogic.name": "Use 1.21.6 Firework Logic",
   "carpet.rule.UseV1216FireworkLogic.desc": "Backports 1.21.6 Firework work logic to 1.21.1",
   "carpet.rule.optimizedBoat.name": "optimizedBoat",
-  "carpet.rule.optimizedBoat.desc": "Optimize boat behavior so that after 3 seconds of inactivity, the boat enters a semi-dormant state. In this state, the boat only performs monster boarding/exiting checks. When a player boards the boat, it reverts to full behavior. It is recommended to enable this when using a boat-based mob farm."
+  "carpet.rule.optimizedBoat.desc": "Optimize boat behavior so that after 3 seconds of inactivity, the boat enters a semi-dormant state. In this state, the boat only performs monster boarding/exiting checks. When a player boards the boat, it reverts to full behavior. It is recommended to enable this when using a boat-based mob farm.",
+  "carpet.rule.optimizedBoatConstraints.name": "optimizedBoat constraints",
+  "carpet.rule.optimizedBoatConstraints.desc": "Enable semi‑dormant optimization when the boat count within a 256×512 region exceeds the set threshold, a value of 0 disables the regional limit."
 }

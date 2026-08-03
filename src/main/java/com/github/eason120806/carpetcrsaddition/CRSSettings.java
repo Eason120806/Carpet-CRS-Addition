@@ -47,4 +47,11 @@ public class CRSSettings {
 
     @Rule(categories = {CRS, OPTIMIZATION, EXPERIMENTAL})
     public static boolean optimizedBoat = false;
+
+    @Rule(
+            categories = {CRS, OPTIMIZATION, EXPERIMENTAL},
+            options = {"1500", "2000", "2500", "3000"},
+            strict = false
+    )
+    public static int optimizedBoatConstraints = 1500;
 }
