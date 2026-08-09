@@ -54,4 +54,7 @@ public class CRSSettings {
             strict = false
     )
     public static int optimizedBoatConstraints = 1500;
+
+    @Rule(categories = {CRS, CREATIVE})
+    public static boolean ItemHighlight = false;
 }

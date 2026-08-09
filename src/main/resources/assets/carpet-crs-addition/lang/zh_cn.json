@@ -15,7 +15,9 @@
   "carpet.rule.UseV1216FireworkLogic.name": "使用1.21.6烟花逻辑",
   "carpet.rule.UseV1216FireworkLogic.desc": "将1.21.6的烟花工作逻辑移植到1.21.1",
   "carpet.rule.optimizedBoat.name": "优化船",
-  "carpet.rule.optimizedBoat.desc": "优化船的行为使得船在3秒静止后进入半休眠状态,半休眠状态时船只执行怪物的上下船检测,当玩家上船时船则恢复完整行为,建议在使用船吸刷怪塔时开启",
+  "carpet.rule.optimizedBoat.desc": "优化船的行为使得船在3秒静止后进入半休眠状态,半休眠状态时船只执行怪物的上下船检测,当玩家上船时船则恢复完整行为",
   "carpet.rule.optimizedBoatConstraints.name": "优化船限制",
-  "carpet.rule.optimizedBoatConstraints.desc": "当 256x512 区域内船数量超过该值时启用半休眠优化，0为无区域限制"
+  "carpet.rule.optimizedBoatConstraints.desc": "当 256x512 区域内船数量超过该值时启用半休眠优化，0为无区域限制",
+  "carpet.rule.ItemHighlight.name": "物品高亮",
+  "carpet.rule.ItemHighlight.desc": "使得物品高亮"
 }

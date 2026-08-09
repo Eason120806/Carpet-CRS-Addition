@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "carpet.SettingsManagerMixin",
+    "ItemHighlight.ServerWorldMixin",
     "rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
     "rule.FireworkBackport.FireworkRocketEntityMixin",
     "rule.optimizedBoat.BoatEntityMixin",
