@@ -19,5 +19,7 @@
   "carpet.rule.optimizedBoatConstraints.name": "优化船限制",
   "carpet.rule.optimizedBoatConstraints.desc": "当 256x512 区域内船数量超过该值时启用半休眠优化，0为无区域限制",
   "carpet.rule.ItemHighlight.name": "物品高亮",
-  "carpet.rule.ItemHighlight.desc": "使得物品高亮"
+  "carpet.rule.ItemHighlight.desc": "使得物品高亮",
+  "carpet.rule.FireworkRocketCooldown.name": "烟花火箭使用冷却",
+  "carpet.rule.FireworkRocketCooldown.desc": "使用烟花后有5个游戏刻的冷却,但是假人没有"
 }

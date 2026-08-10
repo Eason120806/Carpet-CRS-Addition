@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "carpet.SettingsManagerMixin",
-    "ItemHighlight.ServerWorldMixin",
     "rule.DragonAlwaysDropsMaxExperience.EnderDragonEntityMixin",
     "rule.FireworkBackport.FireworkRocketEntityMixin",
     "rule.optimizedBoat.BoatEntityMixin",
@@ -18,7 +17,10 @@
     "rule.ProjectileBackport.ProjectileEntityMixin",
     "rule.ProjectileBackport.ProjectileUtilMixin",
     "rule.ProjectileBackport.ThrownEntityMixin",
-    "rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin"
+    "rule.RemoveExperienceCooldown.ExperienceOrbEntityMixin",
+    "rule.FireworkRocketCooldown.ServerPlayerEntityMixin",
+    "rule.FireworkRocketCooldown.FireworkRocketItemMixin",
+    "rule.ItemHighlight.ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

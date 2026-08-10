@@ -1,4 +1,4 @@
-package com.github.eason120806.carpetcrsaddition.mixins.ItemHighlight;
+package com.github.eason120806.carpetcrsaddition.mixins.rule.ItemHighlight;
 
 import com.github.eason120806.carpetcrsaddition.CRSSettings;
 import net.minecraft.entity.Entity;

@@ -57,4 +57,7 @@ public class CRSSettings {
 
     @Rule(categories = {CRS, CREATIVE})
     public static boolean ItemHighlight = false;
+
+    @Rule(categories = {CRS, CREATIVE})
+    public static boolean FireworkRocketCooldown = false;
 }
